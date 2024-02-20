@@ -68,6 +68,40 @@ app.put("/api/users/:id", (req, res) => {
   return res.status(200).send(mockUsers);
 });
 
+app.patch("/api/users/:id", (req, res) => {
+  const {
+    body,
+    params: { id },
+  } = req;
+
+  const parseId = parseInt(id);
+  console.log(parseId);
+  if (isNaN(parseId)) return res.sendStatus(400);
+  const idx = mockUsers.findIndex((user) => user.id === parseId);
+  if (idx === -1) {
+    return res.sendStatus(404);
+  }
+  mockUsers[idx] = { ...mockUsers[idx], ...body };
+  return res.status(200).send(mockUsers);
+});
+
+app.delete("/api/users/:id", (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const parseId = parseInt(id);
+  if (isNaN(parseId)) {
+    res.sendStatus(400);
+  }
+  const idx = mockUsers.findIndex((user) => user.id === parseId);
+  if (idx === -1) {
+    return res.sendStatus(404);
+  }
+
+  mockUsers.splice(idx);
+  return res.status(200).send(mockUsers);
+});
+
 app.listen(PORT, () => {
   console.log(`running on port ${PORT}`);
 });
